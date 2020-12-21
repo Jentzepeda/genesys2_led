@@ -1,7 +1,9 @@
 `timescale  10ns/100ps
 
 module led_top #(LED_SIZE =8,
-		SW_SIZE=8)
+		SW_SIZE=8,
+		FREQUENCY_DIV_SIZE=28
+		)
 	(
 	 	input			clk_p,
 		input			clk_n,
@@ -17,24 +19,25 @@ module led_top #(LED_SIZE =8,
 		) buf_inst (
 		.O(clk),
 		.I(clk_p),
-		.IB(clk_n));
+		.IB(clk_n)
+		);
 
 
-	reg			flag;
-	reg	[27:0]		div_counter;
-	reg	[LED_SIZE-1:0]	led_count;
+	reg					flag;
+	reg	[FREQUENCY_DIV_SIZE-1:0]	div_counter;
+	reg	[LED_SIZE-1:0]			led_count;
 
 	always@(posedge clk or negedge rst_n)
 	begin
 		if(!rst_n)
 		begin
-			div_counter	<={27{1'b0}};
+			div_counter	<={FREQUENCY_DIV_SIZE{1'b0}};
 			flag 		<=1'b0;
 		end
 		else if(div_counter == 27'd100000000)
 		begin
 			flag 		<=1'b1;
-			div_counter	<={32{1'b0}};
+			div_counter	<={FREQUENCY_DIV_SIZE{1'b0}};
 		end
 		else
 		begin
